@@ -1,29 +1,33 @@
 use eyre::Result;
-use reth::{
-    api::{FullNodeComponents, FullNodeTypes, NodeTypes},
-    builder::{
-        components::{BasicPayloadServiceBuilder, ComponentsBuilder, ExecutorBuilder}, BuilderContext, DebugNode, Node, NodeAdapter, NodeComponentsBuilder, PayloadBuilderConfig
+use reth_ethereum::{
+    evm::{
+        primitives::{
+            Database, EthEvm, EthEvmFactory, Evm, EvmFactory, eth::EthEvmContext,
+            precompiles::PrecompilesMap,
+        },
+        revm::{
+            Inspector,
+            context::{
+                TxEnv,
+                result::{EVMError, HaltReason},
+            },
+            precompile::secp256r1::{P256VERIFY, p256_verify},
+            primitives::hardfork::SpecId,
+        },
     },
-};
-use reth_evm::{
-    Database, EthEvm, EthEvmFactory, Evm, EvmFactory, eth::EthEvmContext,
-    precompiles::PrecompilesMap,
-};
-use reth_node_ethereum::{
-    EthEvmConfig, EthereumNode,
     node::{
-        EthereumAddOns, EthereumConsensusBuilder, EthereumNetworkBuilder, EthereumPayloadBuilder,
-        EthereumPoolBuilder,
+        EthEvmConfig, EthereumNode,
+        api::{FullNodeComponents, FullNodeTypes, NodeTypes},
+        builder::{
+            BuilderContext, DebugNode, Node, NodeAdapter, NodeComponentsBuilder,
+            PayloadBuilderConfig,
+            components::{BasicPayloadServiceBuilder, ComponentsBuilder, ExecutorBuilder},
+        },
+        node::{
+            EthereumAddOns, EthereumConsensusBuilder, EthereumNetworkBuilder,
+            EthereumPayloadBuilder, EthereumPoolBuilder,
+        },
     },
-};
-use revm::{
-    Inspector,
-    context::{
-        TxEnv,
-        result::{EVMError, HaltReason},
-    },
-    precompile::secp256r1::{P256VERIFY, p256_verify},
-    primitives::hardfork::SpecId,
 };
 use std::error::Error;
 
@@ -57,8 +61,8 @@ impl EvmFactory for CustomEvmFactory {
     fn create_evm<DB: Database>(
         &self,
         db: DB,
-        evm_env: reth_evm::EvmEnv<Self::Spec>,
-    ) -> Self::Evm<DB, reth::revm::inspector::NoOpInspector> {
+        evm_env: reth_ethereum::evm::primitives::EvmEnv<Self::Spec>,
+    ) -> Self::Evm<DB, reth_ethereum::evm::revm::inspector::NoOpInspector> {
         let mut evm = self.inner.create_evm(db, evm_env);
 
         self.customize_evm(&mut evm);
@@ -69,7 +73,7 @@ impl EvmFactory for CustomEvmFactory {
     fn create_evm_with_inspector<DB: Database, I: Inspector<Self::Context<DB>>>(
         &self,
         db: DB,
-        input: reth_evm::EvmEnv<Self::Spec>,
+        input: reth_ethereum::evm::primitives::EvmEnv<Self::Spec>,
         inspector: I,
     ) -> Self::Evm<DB, I> {
         let mut evm = self.inner.create_evm_with_inspector(db, input, inspector);
@@ -132,9 +136,11 @@ impl<N: FullNodeTypes<Types = Self>> Node<N> for CustomNode {
 }
 
 impl<N: FullNodeComponents<Types = Self>> DebugNode<N> for CustomNode {
-    type RpcBlock = alloy_rpc_types_eth::Block;
+    type RpcBlock = reth_ethereum::rpc::eth::primitives::Block;
 
-    fn rpc_to_primitive_block(rpc_block: Self::RpcBlock) -> reth::api::BlockTy<Self> {
+    fn rpc_to_primitive_block(
+        rpc_block: Self::RpcBlock,
+    ) -> reth_ethereum::node::api::BlockTy<Self> {
         rpc_block.into_consensus().convert_transactions()
     }
 }

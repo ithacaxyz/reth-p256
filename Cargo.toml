@@ -17,13 +17,8 @@ lto = "fat"
 codegen-units = 1
 
 [dependencies]
-reth = { git = "https://github.com/paradigmxyz/reth", rev = "v1.4.8" }
 reth-cli-util = { git = "https://github.com/paradigmxyz/reth", rev = "v1.4.8" }
-reth-ethereum = { git = "https://github.com/paradigmxyz/reth", rev = "v1.4.8" }
-reth-evm = { git = "https://github.com/paradigmxyz/reth", rev = "v1.4.8" }
-reth-node-ethereum = { git = "https://github.com/paradigmxyz/reth", rev = "v1.4.8" }
-
-alloy-rpc-types-eth = "1"
+reth-ethereum = { git = "https://github.com/paradigmxyz/reth", rev = "v1.4.8", features = ["full", "cli"] }
 
 revm = { version = "24.0.1", features = ["secp256r1"] }
 

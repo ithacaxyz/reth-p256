@@ -4,7 +4,10 @@
 static ALLOC: reth_cli_util::allocator::Allocator = reth_cli_util::allocator::new_allocator();
 
 use clap::Parser;
-use reth::{builder::NodeHandle, chainspec::EthereumChainSpecParser, cli::Cli};
+use reth_ethereum::{
+    cli::{Cli, chainspec::EthereumChainSpecParser},
+    node::builder::NodeHandle,
+};
 use tracing::info;
 
 mod node;

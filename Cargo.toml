@@ -3,6 +3,14 @@ name = "reth-p256"
 version = "0.1.0"
 edition = "2024"
 
+[profile.release]
+opt-level = 3
+lto = "thin"
+debug = "none"
+strip = "symbols"
+panic = "unwind"
+codegen-units = 16
+
 [dependencies]
 reth = { git = "https://github.com/paradigmxyz/reth", rev = "v1.4.8" }
 reth-cli-util = { git = "https://github.com/paradigmxyz/reth", rev = "v1.4.8" }

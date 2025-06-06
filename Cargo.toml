@@ -1,0 +1,19 @@
+[package]
+name = "reth-p256"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+reth = { git = "https://github.com/paradigmxyz/reth", rev = "v1.4.8" }
+reth-cli-util = { git = "https://github.com/paradigmxyz/reth", rev = "v1.4.8" }
+reth-ethereum = { git = "https://github.com/paradigmxyz/reth", rev = "v1.4.8" }
+reth-evm = { git = "https://github.com/paradigmxyz/reth", rev = "v1.4.8" }
+reth-node-ethereum = { git = "https://github.com/paradigmxyz/reth", rev = "v1.4.8" }
+
+alloy-rpc-types-eth = "1"
+
+revm = { version = "24.0.1", features = ["secp256r1"] }
+
+clap = "4"
+eyre = "0.6"
+tracing = "0.1"

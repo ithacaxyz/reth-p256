@@ -17,10 +17,7 @@ lto = "fat"
 codegen-units = 1
 
 [dependencies]
-reth-cli-util = { git = "https://github.com/paradigmxyz/reth", rev = "v1.4.8" }
-reth-ethereum = { git = "https://github.com/paradigmxyz/reth", rev = "v1.4.8", features = ["full", "cli"] }
-
-revm = { version = "24.0.1", features = ["secp256r1"] }
+reth-ethereum = { git = "https://github.com/paradigmxyz/reth", rev = "v1.5.0", features = ["full", "cli"] }
 
 clap = "4"
 eyre = "0.6"

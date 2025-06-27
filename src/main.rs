@@ -1,8 +1,8 @@
 #![allow(missing_docs)]
 
 #[global_allocator]
-static ALLOC: reth_cli_util::allocator::Allocator = reth_cli_util::allocator::new_allocator();
-
+static ALLOC: reth_ethereum::cli::allocator::Allocator =
+    reth_ethereum::cli::allocator::new_allocator();
 use clap::Parser;
 use reth_ethereum::{
     cli::{Cli, chainspec::EthereumChainSpecParser},
@@ -14,7 +14,7 @@ mod node;
 use node::CustomNode;
 
 fn main() {
-    reth_cli_util::sigsegv_handler::install();
+    reth_ethereum::cli::sigsegv_handler::install();
 
     // Enable backtraces unless a RUST_BACKTRACE value has already been explicitly provided.
     if std::env::var_os("RUST_BACKTRACE").is_none() {

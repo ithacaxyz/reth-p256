@@ -4,14 +4,15 @@
 static ALLOC: reth_ethereum::cli::allocator::Allocator =
     reth_ethereum::cli::allocator::new_allocator();
 use clap::Parser;
-use reth_ethereum::{
-    cli::{Cli, chainspec::EthereumChainSpecParser},
-    node::builder::NodeHandle,
-};
 use tracing::info;
+
+mod cli;
+use cli::Cli;
 
 mod node;
 use node::CustomNode;
+
+mod chainspec;
 
 fn main() {
     reth_ethereum::cli::sigsegv_handler::install();
@@ -21,12 +22,11 @@ fn main() {
         unsafe { std::env::set_var("RUST_BACKTRACE", "1") };
     }
 
-    if let Err(err) = Cli::<EthereumChainSpecParser>::parse().run(async move |builder, _| {
+    if let Err(err) = Cli::parse().run(async move |builder, _| {
         info!(target: "reth::cli", "Launching node");
-        let NodeHandle { node_exit_future, .. } =
-            builder.node(CustomNode::default()).launch_with_debug_capabilities().await?;
+        let handle = builder.node(CustomNode::default()).launch_with_debug_capabilities().await?;
 
-        node_exit_future.await
+        handle.node_exit_future.await
     }) {
         eprintln!("Error: {err:?}");
         std::process::exit(1);

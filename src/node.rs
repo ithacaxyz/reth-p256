@@ -1,6 +1,6 @@
+use crate::chainspec::CustomChainSpec;
 use eyre::Result;
 use reth_ethereum::{
-    chainspec::ChainSpec,
     evm::{
         primitives::{
             Database, EthEvm, EthEvmFactory, Evm, EvmFactory,
@@ -93,7 +93,7 @@ impl EvmFactory for CustomEvmFactory {
 pub struct CustomExecutorBuilder;
 
 impl<N: FullNodeTypes<Types = CustomNode>> ExecutorBuilder<N> for CustomExecutorBuilder {
-    type EVM = EthEvmConfig<ChainSpec, CustomEvmFactory>;
+    type EVM = EthEvmConfig<CustomChainSpec, CustomEvmFactory>;
 
     async fn build_evm(self, ctx: &BuilderContext<N>) -> Result<Self::EVM> {
         Ok(EthEvmConfig::new_with_evm_factory(
@@ -110,7 +110,7 @@ pub struct CustomNode;
 
 impl NodeTypes for CustomNode {
     type Primitives = <EthereumNode as NodeTypes>::Primitives;
-    type ChainSpec = <EthereumNode as NodeTypes>::ChainSpec;
+    type ChainSpec = CustomChainSpec;
     type StateCommitment = <EthereumNode as NodeTypes>::StateCommitment;
     type Storage = <EthereumNode as NodeTypes>::Storage;
     type Payload = <EthereumNode as NodeTypes>::Payload;
@@ -129,7 +129,7 @@ impl<N: FullNodeTypes<Types = Self>> Node<N> for CustomNode {
     type AddOns = EthereumAddOns<
         NodeAdapter<N, <Self::ComponentsBuilder as NodeComponentsBuilder<N>>::Components>,
         EthereumEthApiBuilder,
-        EthereumEngineValidatorBuilder<ChainSpec>,
+        EthereumEngineValidatorBuilder,
     >;
 
     fn components_builder(&self) -> Self::ComponentsBuilder {

@@ -1,9 +1,11 @@
 use eyre::Result;
 use reth_ethereum::{
+    chainspec::ChainSpec,
     evm::{
         primitives::{
-            Database, EthEvm, EthEvmFactory, Evm, EvmFactory, eth::EthEvmContext,
-            precompiles::PrecompilesMap,
+            Database, EthEvm, EthEvmFactory, Evm, EvmFactory,
+            eth::EthEvmContext,
+            precompiles::{PrecompileInput, PrecompilesMap},
         },
         revm::{
             Inspector,
@@ -16,7 +18,7 @@ use reth_ethereum::{
         },
     },
     node::{
-        EthEvmConfig, EthereumNode,
+        EthEvmConfig, EthereumEngineValidatorBuilder, EthereumEthApiBuilder, EthereumNode,
         api::{FullNodeComponents, FullNodeTypes, NodeTypes},
         builder::{
             BuilderContext, DebugNode, Node, NodeAdapter, NodeComponentsBuilder,
@@ -43,8 +45,10 @@ impl CustomEvmFactory {
         evm: &mut EthEvm<DB, I, PrecompilesMap>,
     ) {
         if evm.cfg.spec >= SpecId::PRAGUE {
-            evm.precompiles_mut()
-                .apply_precompile(P256VERIFY.address(), |_| Some(p256_verify.into()));
+            evm.precompiles_mut().apply_precompile(P256VERIFY.address(), |_| {
+                let p = |input: PrecompileInput<'_>| p256_verify(input.data, input.gas);
+                Some(p.into())
+            });
         }
     }
 }
@@ -89,7 +93,7 @@ impl EvmFactory for CustomEvmFactory {
 pub struct CustomExecutorBuilder;
 
 impl<N: FullNodeTypes<Types = CustomNode>> ExecutorBuilder<N> for CustomExecutorBuilder {
-    type EVM = EthEvmConfig<CustomEvmFactory>;
+    type EVM = EthEvmConfig<ChainSpec, CustomEvmFactory>;
 
     async fn build_evm(self, ctx: &BuilderContext<N>) -> Result<Self::EVM> {
         Ok(EthEvmConfig::new_with_evm_factory(
@@ -124,6 +128,8 @@ impl<N: FullNodeTypes<Types = Self>> Node<N> for CustomNode {
 
     type AddOns = EthereumAddOns<
         NodeAdapter<N, <Self::ComponentsBuilder as NodeComponentsBuilder<N>>::Components>,
+        EthereumEthApiBuilder,
+        EthereumEngineValidatorBuilder<ChainSpec>,
     >;
 
     fn components_builder(&self) -> Self::ComponentsBuilder {

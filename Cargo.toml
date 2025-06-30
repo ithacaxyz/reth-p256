@@ -17,7 +17,16 @@ lto = "fat"
 codegen-units = 1
 
 [dependencies]
-reth-ethereum = { git = "https://github.com/paradigmxyz/reth", rev = "v1.5.0", features = ["full", "cli"] }
+reth-ethereum = { git = "https://github.com/paradigmxyz/reth", rev = "678b5cd", features = ["full", "cli"] }
+reth-network-peers = { git = "https://github.com/paradigmxyz/reth", rev = "678b5cd" }
+reth-cli = { git = "https://github.com/paradigmxyz/reth", rev = "678b5cd" }
+reth-cli-commands = { git = "https://github.com/paradigmxyz/reth", rev = "678b5cd" }
+reth-cli-runner = { git = "https://github.com/paradigmxyz/reth", rev = "678b5cd" }
+reth-tracing = { git = "https://github.com/paradigmxyz/reth", rev = "678b5cd" }
+reth-node-metrics = { git = "https://github.com/paradigmxyz/reth", rev = "678b5cd" }
+
+alloy-eips = "1"
+alloy-genesis = "1"
 
 clap = "4"
 eyre = "0.6"

@@ -38,17 +38,17 @@ RUN cargo build --profile $BUILD_PROFILE --features "$FEATURES" --locked --bin r
 
 # ARG is not resolved in COPY so we have to hack around it by copying the
 # binary to a temporary location
-RUN cp /app/target/$BUILD_PROFILE/reth-p256 /app/reth-p256
+RUN cp /app/target/$BUILD_PROFILE/reth-p256 /app/reth
 
 # Use Ubuntu as the release image
 FROM ubuntu AS runtime
 WORKDIR /app
 
 # Copy reth over from the build stage
-COPY --from=builder /app/reth-p256 /usr/local/bin
+COPY --from=builder /app/reth /usr/local/bin
 
 # Copy licenses
 COPY LICENSE-* ./
 
 EXPOSE 30303 30303/udp 9001 8545 8546
-ENTRYPOINT ["/usr/local/bin/reth-p256"]
+ENTRYPOINT ["/usr/local/bin/reth"]

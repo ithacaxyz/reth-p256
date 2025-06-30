@@ -24,6 +24,7 @@ use reth_ethereum::{
             BuilderContext, DebugNode, Node, NodeAdapter, NodeComponentsBuilder,
             PayloadBuilderConfig,
             components::{BasicPayloadServiceBuilder, ComponentsBuilder, ExecutorBuilder},
+            rpc::BasicEngineApiBuilder,
         },
         node::{
             EthereumAddOns, EthereumConsensusBuilder, EthereumNetworkBuilder,
@@ -129,7 +130,7 @@ impl<N: FullNodeTypes<Types = Self>> Node<N> for CustomNode {
     type AddOns = EthereumAddOns<
         NodeAdapter<N, <Self::ComponentsBuilder as NodeComponentsBuilder<N>>::Components>,
         EthereumEthApiBuilder,
-        EthereumEngineValidatorBuilder,
+        EthereumEngineValidatorBuilder<CustomChainSpec>,
     >;
 
     fn components_builder(&self) -> Self::ComponentsBuilder {
@@ -138,6 +139,10 @@ impl<N: FullNodeTypes<Types = Self>> Node<N> for CustomNode {
 
     fn add_ons(&self) -> Self::AddOns {
         EthereumAddOns::default()
+            .with_engine_validator(EthereumEngineValidatorBuilder::<CustomChainSpec>::default())
+            .with_engine_api(
+                BasicEngineApiBuilder::<EthereumEngineValidatorBuilder<CustomChainSpec>>::default(),
+            )
     }
 }
 

@@ -13,7 +13,7 @@ use reth_ethereum::{
 };
 use reth_network_peers::NodeRecord;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Default, Clone)]
 pub struct CustomChainSpec {
     inner: ChainSpec,
 }

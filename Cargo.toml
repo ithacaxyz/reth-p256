@@ -17,13 +17,13 @@ lto = "fat"
 codegen-units = 1
 
 [dependencies]
-reth-ethereum = { git = "https://github.com/paradigmxyz/reth", rev = "9652c0f", features = ["full", "cli"] }
-reth-network-peers = { git = "https://github.com/paradigmxyz/reth", rev = "9652c0f" }
-reth-cli = { git = "https://github.com/paradigmxyz/reth", rev = "9652c0f" }
-reth-cli-commands = { git = "https://github.com/paradigmxyz/reth", rev = "9652c0f" }
-reth-cli-runner = { git = "https://github.com/paradigmxyz/reth", rev = "9652c0f" }
-reth-tracing = { git = "https://github.com/paradigmxyz/reth", rev = "9652c0f" }
-reth-node-metrics = { git = "https://github.com/paradigmxyz/reth", rev = "9652c0f" }
+reth-ethereum = { git = "https://github.com/paradigmxyz/reth", rev = "678b5cd", features = ["full", "cli"] }
+reth-network-peers = { git = "https://github.com/paradigmxyz/reth", rev = "678b5cd" }
+reth-cli = { git = "https://github.com/paradigmxyz/reth", rev = "678b5cd" }
+reth-cli-commands = { git = "https://github.com/paradigmxyz/reth", rev = "678b5cd" }
+reth-cli-runner = { git = "https://github.com/paradigmxyz/reth", rev = "678b5cd" }
+reth-tracing = { git = "https://github.com/paradigmxyz/reth", rev = "678b5cd" }
+reth-node-metrics = { git = "https://github.com/paradigmxyz/reth", rev = "678b5cd" }
 
 alloy-eips = "1"
 alloy-genesis = "1"

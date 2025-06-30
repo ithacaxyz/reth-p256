@@ -10,7 +10,6 @@ use reth_ethereum::{
     cli::interface::Commands,
     consensus::EthBeaconConsensus,
     evm::EthEvmConfig,
-    network::EthNetworkPrimitives,
     node::{
         builder::{NodeBuilder, WithLaunchContext},
         core::{
@@ -91,19 +90,16 @@ impl Cli {
             Commands::Db(command) => {
                 runner.run_blocking_until_ctrl_c(command.execute::<CustomNode>())
             }
-            Commands::Stage(command) => runner.run_command_until_exit(|ctx| {
-                command.execute::<CustomNode, _, _, EthNetworkPrimitives>(ctx, components)
-            }),
-            Commands::P2P(command) => {
-                runner.run_until_ctrl_c(command.execute::<EthNetworkPrimitives>())
-            }
+            Commands::Stage(command) => runner
+                .run_command_until_exit(|ctx| command.execute::<CustomNode, _>(ctx, components)),
+            Commands::P2P(command) => runner.run_until_ctrl_c(command.execute::<CustomNode>()),
             Commands::Config(command) => runner.run_until_ctrl_c(command.execute()),
             Commands::Recover(command) => {
                 runner.run_command_until_exit(|ctx| command.execute::<CustomNode>(ctx))
             }
             Commands::Prune(command) => runner.run_until_ctrl_c(command.execute::<CustomNode>()),
             Commands::Import(command) => {
-                runner.run_blocking_until_ctrl_c(command.execute::<CustomNode, _, _>(components))
+                runner.run_blocking_until_ctrl_c(command.execute::<CustomNode, _>(components))
             }
             Commands::Debug(_command) => todo!(),
             Commands::ImportEra(_command) => {
